@@ -70,272 +70,391 @@ class _InviteScreenState extends State<InviteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final bool isWide = screenSize.width > 768;
+
     return Scaffold(
       backgroundColor: kCreamBg,
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 500),
-          child: SingleChildScrollView(
+      body: Stack(
+        children: [
+          // Scrollable Full-Bleed Content
+          SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-            // 1. Envelope Header
-            ClipPath(
-              clipper: EnvelopeClipper(),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.only(top: 80, bottom: 80),
-                color: kOliveGreen,
-                child: Column(
-                  children: [
-                    Text(
-                      "John\n&\nCarmel",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'serif',
-                        fontStyle: FontStyle.italic,
-                        color: Colors.white,
-                        fontSize: 55,
-                        height: 1.1,
-                      ),
+                // 1. Full-Bleed Green Envelope Header (Spans 100% Screen Width)
+                ClipPath(
+                  clipper: EnvelopeClipper(),
+                  child: Container(
+                    width: double.infinity,
+                    color: kOliveGreen,
+                    padding: EdgeInsets.symmetric(
+                      vertical: isWide ? 30 : 15,
                     ),
-                    const SizedBox(height: 40),
-                    const Text(
-                      "30.08.2026",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        letterSpacing: 4,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ),
-            ),
-            
-            const SizedBox(height: 20),
-
-            // 2. Main Image
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                
-                child: Image.asset(
-                  'assets/couple.png',
-                  fit: BoxFit.cover,
-                  height: 380,
-                  width: double.infinity,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 50),
-
-            // 3. Countdown Widget (Green Box)
-            Container(
-              width: double.infinity,
-              color: kOliveGreen,
-              padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
-              child: Column(
-                children: [
-                  const Text(
-                    "SAVE THE DATE",
-                    style: TextStyle(
-                      fontFamily: 'serif',
-                      color: Colors.white,
-                      fontSize: 16,
-                      letterSpacing: 3,
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildDateUnit("AUG"),
-                      const SizedBox(width: 15),
-                      const Text(
-                        "30",
-                        style: TextStyle(
-                          fontFamily: 'serif',
-                          color: Colors.white,
-                          fontSize: 55,
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 600),
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              'assets/J.png',
+                              height: isWide ? 320 : 250,
+                              fit: BoxFit.contain,
+                            ),
+                            const SizedBox(height: 25),
+                            const Text(
+                              "30.08.2026",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                letterSpacing: 4,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                          ],
                         ),
                       ),
-                      const SizedBox(width: 15),
-                      _buildDateUnit("2026"),
-                    ],
-                  ),
-                  const SizedBox(height: 40),
-                  const Text(
-                    "COUNTDOWN",
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 12,
-                      letterSpacing: 4,
                     ),
                   ),
-                  const SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildTimeUnit(_timeLeft.inDays, "Days"),
-                      const Text(":", style: TextStyle(color: Colors.white, fontSize: 24)),
-                      _buildTimeUnit(_timeLeft.inHours.remainder(24), "Hrs"),
-                      const Text(":", style: TextStyle(color: Colors.white, fontSize: 24)),
-                      _buildTimeUnit(_timeLeft.inMinutes.remainder(60), "Min"),
-                      const Text(":", style: TextStyle(color: Colors.white, fontSize: 24)),
-                      _buildTimeUnit(_timeLeft.inSeconds.remainder(60), "Sec"),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+                ),
 
-            const SizedBox(height: 60),
+                const SizedBox(height: 45),
 
-            // 4. Ceremony Details
-            const Icon(Icons.church_outlined, color: kOliveGreen, size: 35),
-            const SizedBox(height: 15),
-            const Text(
-              "Religious Ceremony",
-              style: TextStyle(
-                fontFamily: 'serif',
-                fontStyle: FontStyle.italic,
-                fontSize: 28,
-                color: kDarkText,
-              ),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              "11:30 AM\nMount Carmel Church\nChathiath",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 14,
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 25),
-            OutlinedButton(
-              onPressed: () => _launchMapsUrl("https://www.google.com/maps/search/?api=1&query=Mount+Carmel+Church,+Chathiath,+Kochi,+Kerala"),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: kOliveGreen,
-                side: const BorderSide(color: kOliveGreen, width: 1.2),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-              ),
-              child: const Text("View Location", style: TextStyle(letterSpacing: 1)),
-            ),
-
-            const SizedBox(height: 60),
-
-            // 5. Reception Details
-            const Icon(Icons.wine_bar_outlined, color: kOliveGreen, size: 35),
-            const SizedBox(height: 15),
-            const Text(
-              "Reception",
-              style: TextStyle(
-                fontFamily: 'serif',
-                fontStyle: FontStyle.italic,
-                fontSize: 28,
-                color: kDarkText,
-              ),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              "12:30 PM\nCarmel Hall\nPachalam, Kochi",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 14,
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 25),
-            OutlinedButton(
-              onPressed: () => _launchMapsUrl("https://www.google.com/maps/place/Carmel+Hall/@9.9914413,76.279609,17z/data=!4m10!1m2!2m1!1sCarmel+Hall,+Pachalam,+Ernakulam,+Kerala!3m6!1s0x3b080d5cc431d5ab:0xd606c141305a14ae!8m2!3d9.9914413!4d76.2817977!15sCihDYXJtZWwgSGFsbCwgUGFjaGFsYW0sIEVybmFrdWxhbSwgS2VyYWxhkgEEaGFsbOABAA!16s%2Fg%2F1q5bkk9nj?entry=ttu&g_ep=EgoyMDI2MDQxNS4wIKXMDSoASAFQAw%3D%3D"),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: kOliveGreen,
-                side: const BorderSide(color: kOliveGreen, width: 1.2),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-              ),
-              child: const Text("View Location", style: TextStyle(letterSpacing: 1)),
-            ),
-
-            const SizedBox(height: 70),
-
-            // 6. Confirmation / RSVP
-            Container(
-              width: double.infinity,
-              color: kOliveGreen,
-              padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
-              child: Column(
-                children: [
-                  const Icon(Icons.favorite_border, color: Colors.white, size: 35),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "Confirmation",
-                    style: TextStyle(
-                      fontFamily: 'serif',
-                      fontStyle: FontStyle.italic,
-                      color: Colors.white,
-                      fontSize: 32,
+                // 2. Main Couple Image & Overlay Quote (Centered)
+                Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 580),
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.topCenter,
+                      children: [
+                        Positioned(
+                          top: -70,
+                          child: Opacity(
+                            opacity: 0.6,
+                            child: Image.asset(
+                              'assets/quotey.png',
+                              width: isWide ? 280 : 230,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.asset(
+                                'assets/couple.png',
+                                fit: BoxFit.cover,
+                                height: isWide ? 420 : 340,
+                                width: double.infinity,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 15),
-                  const Text(
-                    "We kindly request you to confirm your\nattendance to help us prepare.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 13,
-                      height: 1.5,
-                    ),
+                ),
+
+                const SizedBox(height: 50),
+
+                // 3. Full-Bleed Save The Date & Countdown (Spans 100% Screen Width)
+                Container(
+                  width: double.infinity,
+                  color: kOliveGreen,
+                  padding: EdgeInsets.symmetric(
+                    vertical: isWide ? 60 : 45,
+                    horizontal: 20,
                   ),
-                  const SizedBox(height: 35),
-                  ElevatedButton(
-                    onPressed: _showRsvpDialog,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      side: const BorderSide(color: Colors.white, width: 1.5),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                    ),
-                    child: const Text(
-                      "Click Here",
-                      style: TextStyle(
-                        letterSpacing: 1.5,
-                        fontWeight: FontWeight.bold,
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 750),
+                      child: Column(
+                        children: [
+                          const Text(
+                            "SAVE THE DATE",
+                            style: TextStyle(
+                              fontFamily: 'serif',
+                              color: Colors.white,
+                              fontSize: 22,
+                              letterSpacing: 4.5,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 25),
+                          const Text(
+                            "Sunday",
+                            style: TextStyle(
+                              fontFamily: 'serif',
+                              fontStyle: FontStyle.italic,
+                              color: Colors.white,
+                              fontSize: 24,
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                _buildDateUnit("AUG"),
+                                const SizedBox(width: 25),
+                                const Text(
+                                  "30",
+                                  style: TextStyle(
+                                    fontFamily: 'serif',
+                                    color: Colors.white,
+                                    fontSize: 80,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(width: 25),
+                                _buildDateUnit("2026"),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 40),
+                          const Text(
+                            "COUNTDOWN",
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 15,
+                              letterSpacing: 5,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                _buildTimeUnit(_timeLeft.inDays, "DAYS"),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  child: Text(":", style: TextStyle(color: Colors.white, fontSize: 34)),
+                                ),
+                                _buildTimeUnit(_timeLeft.inHours.remainder(24), "HRS"),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  child: Text(":", style: TextStyle(color: Colors.white, fontSize: 34)),
+                                ),
+                                _buildTimeUnit(_timeLeft.inMinutes.remainder(60), "MIN"),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  child: Text(":", style: TextStyle(color: Colors.white, fontSize: 34)),
+                                ),
+                                _buildTimeUnit(_timeLeft.inSeconds.remainder(60), "SEC"),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
+                ),
+
+                const SizedBox(height: 55),
+
+                // 4 & 5. Event Details - Mass & Reception (Centered Grid)
+                Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 750),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: isWide
+                          ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(child: _buildMassSection()),
+                                Container(
+                                  height: 250,
+                                  width: 1,
+                                  color: kOliveGreen.withOpacity(0.3),
+                                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                                ),
+                                Expanded(child: _buildReceptionSection()),
+                              ],
+                            )
+                          : Column(
+                              children: [
+                                _buildMassSection(),
+                                const SizedBox(height: 45),
+                                Divider(color: kOliveGreen.withOpacity(0.3), indent: 40, endIndent: 40),
+                                const SizedBox(height: 35),
+                                _buildReceptionSection(),
+                              ],
+                            ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 65),
+
+                // 6. Full-Bleed Green Banner with Heart Icon
+                Container(
+                  width: double.infinity,
+                  color: kOliveGreen,
+                  padding: EdgeInsets.symmetric(
+                    vertical: isWide ? 40 : 30,
+                    horizontal: 20,
+                  ),
+                  child: const Center(
+                    child: Icon(Icons.favorite_border, color: Colors.white, size: 38),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Top Left Corner Lotus
+          Positioned(
+            top: -20,
+            left: -20,
+            child: IgnorePointer(
+              child: Opacity(
+                opacity: 0.8,
+                child: Transform.flip(
+                  flipX: true,
+                  flipY: true,
+                  child: Image.asset('assets/lotus.png', width: 120),
+                ),
               ),
             ),
-          ],
+          ),
+          // Top Right Corner Lotus
+          Positioned(
+            top: -20,
+            right: -20,
+            child: IgnorePointer(
+              child: Opacity(
+                opacity: 0.8,
+                child: Transform.flip(
+                  flipY: true,
+                  child: Image.asset('assets/lotus.png', width: 120),
+                ),
+              ),
+            ),
+          ),
+          // Bottom Left Corner Lotus
+          Positioned(
+            bottom: -20,
+            left: -20,
+            child: IgnorePointer(
+              child: Opacity(
+                opacity: 0.8,
+                child: Transform.flip(
+                  flipX: true,
+                  child: Image.asset('assets/lotus.png', width: 120),
+                ),
+              ),
+            ),
+          ),
+          // Bottom Right Corner Lotus
+          Positioned(
+            bottom: -20,
+            right: -20,
+            child: IgnorePointer(
+              child: Opacity(
+                opacity: 0.8,
+                child: Image.asset('assets/lotus.png', width: 120),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMassSection() {
+    return Column(
+      children: [
+        const Icon(Icons.church_outlined, color: kOliveGreen, size: 36),
+        const SizedBox(height: 12),
+        const Text(
+          "Wedding Mass",
+          style: TextStyle(
+            fontFamily: 'serif',
+            fontStyle: FontStyle.italic,
+            fontSize: 26,
+            color: Colors.black,
+          ),
         ),
-      ),
-      ),
-      ),
+        const SizedBox(height: 10),
+        const Text(
+          "Inviting you\nto witness the sacred union\nsolemnized by\n\nVery Rev. Msgr. Mathew Kallingal\n\n11:00 AM\nMount Carmel Church\nChathiath",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black87,
+            fontSize: 15,
+            height: 1.5,
+          ),
+        ),
+        const SizedBox(height: 20),
+        OutlinedButton(
+          onPressed: () => _launchMapsUrl("https://www.google.com/maps/search/?api=1&query=Mount+Carmel+Church,+Chathiath,+Kochi,+Kerala"),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Colors.black,
+            side: const BorderSide(color: kOliveGreen, width: 1.2),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+          ),
+          child: const Text("View Location", style: TextStyle(letterSpacing: 1)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildReceptionSection() {
+    return Column(
+      children: [
+        const Icon(Icons.wine_bar_outlined, color: kOliveGreen, size: 36),
+        const SizedBox(height: 12),
+        const Text(
+          "Lunch Reception",
+          style: TextStyle(
+            fontFamily: 'serif',
+            fontStyle: FontStyle.italic,
+            fontSize: 26,
+            color: Colors.black,
+          ),
+        ),
+        const SizedBox(height: 10),
+        const Text(
+          "12:30 PM\nCarmel Hall\nCemetery Junction, Kochi",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black87,
+            fontSize: 15,
+            height: 1.5,
+          ),
+        ),
+        const SizedBox(height: 20),
+        OutlinedButton(
+          onPressed: () => _launchMapsUrl("https://www.google.com/maps/place/Carmel+Hall/@9.9914413,76.279609,17z/data=!4m10!1m2!2m1!1sCarmel+Hall,+Pachalam,+Ernakulam,+Kerala!3m6!1s0x3b080d5cc431d5ab:0xd606c141305a14ae!8m2!3d9.9914413!4d76.2817977!15sCihDYXJtZWwgSGFsbCwgUGFjaGFsYW0sIEVybmFrdWxhbSwgS2VyYWxhkgEEaGFsbOABAA!16s%2Fg%2F1q5bkk9nj?entry=ttu&g_ep=EgoyMDI2MDQxNS4wIKXMDSoASAFQAw%3D%3D"),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Colors.black,
+            side: const BorderSide(color: kOliveGreen, width: 1.2),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+          ),
+          child: const Text("View Location", style: TextStyle(letterSpacing: 1)),
+        ),
+      ],
     );
   }
 
   Widget _buildDateUnit(String val) {
     return Column(
       children: [
-        Container(width: 40, height: 1.5, color: Colors.white54),
+        Container(width: 48, height: 1.5, color: Colors.white54),
         const SizedBox(height: 8),
-        Text(val, style: const TextStyle(color: Colors.white, fontSize: 13, letterSpacing: 2)),
+        Text(val, style: const TextStyle(color: Colors.white, fontSize: 16, letterSpacing: 3, fontWeight: FontWeight.w600)),
         const SizedBox(height: 8),
-        Container(width: 40, height: 1.5, color: Colors.white54),
+        Container(width: 48, height: 1.5, color: Colors.white54),
       ],
     );
   }
@@ -345,12 +464,12 @@ class _InviteScreenState extends State<InviteScreen> {
       children: [
         Text(
           val.toString().padLeft(2, '0'),
-          style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w600),
+          style: const TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 5),
+        const SizedBox(height: 6),
         Text(
           label,
-          style: const TextStyle(color: Colors.white70, fontSize: 10, letterSpacing: 1.5),
+          style: const TextStyle(color: Colors.white70, fontSize: 12, letterSpacing: 2, fontWeight: FontWeight.w500),
         )
       ],
     );

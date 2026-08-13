@@ -3,6 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Guest
 
+@api_view(['GET'])
+def home(request):
+    return Response({"message": "Wedding Invite API is running 💍"}, status=200)
+
 @api_view(['POST'])
 def rsvp(request):
     try:

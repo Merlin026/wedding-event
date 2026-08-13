@@ -10,21 +10,14 @@ class RsvpPopup extends StatefulWidget {
 
 class _RsvpPopupState extends State<RsvpPopup> {
   final nameController = TextEditingController();
-  final guestsController = TextEditingController();
+  int guestCount = 1;
   bool attending = true;
   bool isLoading = false;
 
   Future<void> submitRSVP() async {
-  if (nameController.text.isEmpty || guestsController.text.isEmpty) {
+  if (nameController.text.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Please fill all fields")),
-    );
-    return;
-  }
-
-  if (int.tryParse(guestsController.text) == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Please enter a valid number of guests")),
+      const SnackBar(content: Text("Please enter your name")),
     );
     return;
   }
@@ -43,7 +36,7 @@ class _RsvpPopupState extends State<RsvpPopup> {
           body: jsonEncode({
             "name": nameController.text,
             "attending": attending,
-            "guests": int.parse(guestsController.text),
+            "guests": guestCount,
           }),
         )
         .timeout(const Duration(seconds: 10));
@@ -82,7 +75,6 @@ class _RsvpPopupState extends State<RsvpPopup> {
   @override
   void dispose() {
     nameController.dispose();
-    guestsController.dispose();
     super.dispose();
   }
 
@@ -92,22 +84,24 @@ class _RsvpPopupState extends State<RsvpPopup> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       elevation: 20,
       backgroundColor: Colors.transparent,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: Color(0xFF6B7A57).withOpacity(0.5), width: 1.5),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 20,
-              offset: Offset(0, 10),
-            ),
-          ],
-        ),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 450),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(color: const Color(0xFF6B7A57).withOpacity(0.5), width: 1.5),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 20,
+                offset: Offset(0, 10),
+              ),
+            ],
+          ),
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
+            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 18),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -143,24 +137,63 @@ class _RsvpPopupState extends State<RsvpPopup> {
                   ),
                 ),
                 SizedBox(height: 15),
-                TextField(
-                  controller: guestsController,
-                  decoration: InputDecoration(
-                    labelText: "Total family members attending including you",
-                    labelStyle: TextStyle(color: Colors.grey.shade600),
-                    prefixIcon: Icon(Icons.group_add_outlined, color: Color(0xFF6B7A57)),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: Color(0xFF6B7A57), width: 2),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey.shade50,
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade50,
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.grey.shade300),
                   ),
-                  keyboardType: TextInputType.number,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Icon(Icons.group_add_outlined, color: Color(0xFF6B7A57)),
+                            SizedBox(width: 8),
+                            Expanded( // Allows text to scale down or clip elegantly rather than pushing the layout
+                              child: FittedBox(
+                                alignment: Alignment.centerLeft,
+                                fit: BoxFit.scaleDown,
+                                child: Text("Number of Guests", style: TextStyle(fontSize: 15, color: Colors.grey.shade700)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            padding: const EdgeInsets.all(2),
+                            constraints: const BoxConstraints(), // Removes default 48px min-width bounds
+                            icon: Icon(Icons.remove_circle_outline, color: guestCount > 1 ? Color(0xFF6B7A57) : Colors.grey),
+                            onPressed: () {
+                              if (guestCount > 1) {
+                                setState(() => guestCount--);
+                              }
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            child: Text(
+                              '$guestCount',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF6B7A57)),
+                            ),
+                          ),
+                          IconButton(
+                            padding: const EdgeInsets.all(4),
+                            constraints: const BoxConstraints(), // Removes default bounds
+                            icon: Icon(Icons.add_circle_outline, color: Color(0xFF6B7A57)),
+                            onPressed: () {
+                              setState(() => guestCount++);
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(height: 20),
                 Container(
@@ -228,6 +261,7 @@ class _RsvpPopupState extends State<RsvpPopup> {
           ),
         ),
       ),
+    ),
     );
   }
 }
